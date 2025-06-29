@@ -1,14 +1,23 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "fencing_project/wsgi.py",
+      "src": "app-vercel.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "fencing_project/wsgi.py"
+      "dest": "app-vercel.py"
     }
-  ]
+  ],
+  "functions": {
+    "app-vercel.py": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "PYTHONPATH": "."
+  }
 } 

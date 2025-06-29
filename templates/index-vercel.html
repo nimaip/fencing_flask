@@ -126,12 +126,35 @@
             margin: 20px 0;
             border: 1px solid #f5c6cb;
         }
+        
+        .note-box {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .vercel-note {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #bee5eb;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
     <div class="main-container">
         <h1 class="title">Fencing Pose Analysis</h1>
         <p class="subtitle">Analyze your fencing form with AI-powered pose estimation</p>
+        
+        <div class="vercel-note">
+            <strong>Note:</strong> This is a Vercel deployment. Due to serverless limitations, the app may use mock analysis instead of real OpenCV/MediaPipe processing. For full functionality, consider deploying to Heroku or DigitalOcean.
+        </div>
         
         <div class="row">
             <div class="col-md-6">
@@ -163,6 +186,9 @@
             <div class="col-md-6">
                 <div id="results" class="results-section">
                     <h3>Analysis Results</h3>
+                    
+                    <div id="noteMessage" class="note-box" style="display: none;"></div>
+                    
                     <div class="image-container">
                         <h5>Original Image</h5>
                         <img id="originalImage" class="img-fluid" alt="Original Image">
@@ -192,6 +218,7 @@
                 $('.loading').show();
                 $('#results').hide();
                 $('#errorMessage').hide();
+                $('#noteMessage').hide();
                 
                 $.ajax({
                     url: '/analyze',
@@ -201,9 +228,18 @@
                     contentType: false,
                     success: function(response) {
                         if (response.success) {
+                            // Display note if present
+                            if (response.note) {
+                                $('#noteMessage').text(response.note).show();
+                            }
+                            
                             // Display images
-                            $('#originalImage').attr('src', response.original_image);
-                            $('#annotatedImage').attr('src', response.annotated_image);
+                            if (response.original_image) {
+                                $('#originalImage').attr('src', response.original_image);
+                            }
+                            if (response.annotated_image) {
+                                $('#annotatedImage').attr('src', response.annotated_image);
+                            }
                             
                             // Display feedback
                             let feedbackHtml = '';

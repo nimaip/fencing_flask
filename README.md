@@ -15,7 +15,7 @@ A web application for analyzing fencing poses using computer vision and AI. The 
 1. **Clone the repository**:
    ```bash
    git clone <your-repo-url>
-   cd fencing
+   cd fencing_flask
    ```
 
 2. **Install dependencies**:
@@ -26,6 +26,11 @@ A web application for analyzing fencing poses using computer vision and AI. The 
 3. **Run the application**:
    ```bash
    python app.py
+   ```
+   
+   Or use the startup script:
+   ```bash
+   python run.py
    ```
 
 4. **Open your browser** and go to `http://localhost:5000`
@@ -54,6 +59,7 @@ A web application for analyzing fencing poses using computer vision and AI. The 
 - `enGarde.py`: Contains logic for analyzing en garde position
 - `lunge.py`: Contains logic for analyzing lunge position
 - `app.py`: Flask application that serves the web interface
+- `run.py`: Startup script with dependency checking
 
 ## Analysis Criteria
 
@@ -74,14 +80,15 @@ A web application for analyzing fencing poses using computer vision and AI. The 
 ## File Structure
 
 ```
-fencing/
+fencing_flask/
 ├── app.py              # Flask application
+├── run.py              # Startup script with dependency checking
 ├── enGarde.py          # En garde pose analysis
 ├── lunge.py            # Lunge pose analysis
 ├── requirements.txt    # Python dependencies
 ├── templates/
 │   └── index.html     # Web interface
-├── uploads/           # Temporary upload directory
+├── uploads/           # Temporary upload directory (created automatically)
 └── README.md          # This file
 ```
 

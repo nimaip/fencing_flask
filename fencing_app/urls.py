@@ -1,8 +1,7 @@
 from django.urls import path
-from . import vercel_views
+from . import views
 
 urlpatterns = [
-    path('', vercel_views.home, name='home'),
-    path('analyze/', vercel_views.analyze_pose, name='analyze_pose'),
-    path('health/', vercel_views.health_check, name='health_check'),
+    path('', views.home, name='home'),
+    path('analyze/', views.analyze_pose, name='analyze_pose'),
 ] 

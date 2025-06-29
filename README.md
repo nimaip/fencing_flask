@@ -1,73 +1,70 @@
-# Fencing Pose Estimation Feedback
+# Fencing Pose Analysis
 
-A Django web application that provides real-time feedback on fencing poses (En Garde and Lunge) using computer vision and pose estimation.
+A Flask-based web application for analyzing fencing poses using computer vision and pose estimation.
 
 ## Features
 
-- Upload images of fencing poses
-- Choose between En Garde and Lunge analysis
-- Get detailed feedback on your form
-- View annotated images with pose landmarks
-- Modern, responsive user interface
-- Real-time analysis with AJAX
+- **En Garde Pose Analysis**: Analyzes the en garde stance for proper form
+- **Lunge Pose Analysis**: Analyzes the lunge position for correct technique
+- **Real-time Feedback**: Provides detailed feedback on pose angles and positioning
+- **Visual Annotations**: Shows annotated images with pose landmarks and angles
 
 ## Installation
 
-1. Clone this repository
-2. Create a virtual environment (recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-3. Install the required dependencies:
+1. **Install Python dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
-4. Create necessary directories:
+
+2. **Run the application**:
    ```bash
-   mkdir -p media/uploads media/results
+   python app.py
    ```
-5. Run migrations:
-   ```bash
-   python manage.py migrate
+
+3. **Open your browser** and go to:
+   ```
+   http://localhost:5000
    ```
 
 ## Usage
 
-1. Start the development server:
-   ```bash
-   python manage.py runserver
-   ```
-2. Open your web browser and navigate to http://localhost:8000
-3. Upload an image of your fencing pose
-4. Select the pose type (En Garde or Lunge)
-5. Click "Analyze Pose" to get feedback
+1. Select the pose type (En Garde or Lunge)
+2. Upload an image of your fencing pose
+3. Click "Analyze Pose" to get feedback
+4. View the original and annotated images with analysis results
 
-## Project Structure
+## Technical Details
+
+- **Backend**: Flask web framework
+- **Computer Vision**: OpenCV and MediaPipe for pose detection
+- **Frontend**: HTML, CSS, Bootstrap, and jQuery
+- **Image Processing**: Real-time pose analysis with angle calculations
+
+## File Structure
 
 ```
 fencing/
-├── fencing_project/     # Django project settings
-├── fencing_app/         # Main application
-├── templates/          # HTML templates
-├── media/             # Uploaded and processed images
-│   ├── uploads/       # Original uploaded images
-│   └── results/       # Processed images with annotations
-├── static/            # Static files (CSS, JS)
-├── enGarde.py         # En Garde pose analysis
-├── lunge.py           # Lunge pose analysis
-└── manage.py          # Django management script
+├── app.py              # Flask application
+├── enGarde.py          # En garde pose analysis
+├── lunge.py            # Lunge pose analysis
+├── requirements.txt    # Python dependencies
+├── templates/
+│   └── index.html      # Main HTML template
+└── static/
+    └── css/
+        └── style.css   # Custom styles
 ```
 
-## Tips for Best Results
+## Dependencies
 
-- Use clear, well-lit images
-- Ensure the entire body is visible in the frame
-- Stand in a clear, uncluttered background
-- Wear clothing that contrasts with the background
-- Maintain a clear view of all limbs
+- Flask 3.0.0
+- OpenCV 4.9.0.80
+- MediaPipe 0.10.8
+- NumPy 1.26.4
+- Pillow 10.2.0
 
-## Requirements
+## Notes
 
-- Python 3.8 or higher
-- See requirements.txt for all dependencies
+- The application creates a temporary `uploads` folder for processing images
+- Images are processed in memory and not permanently stored
+- Maximum file size is 16MB

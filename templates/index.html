@@ -19,11 +19,14 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="pose_type" class="form-label">Select Pose Type</label>
-                        {{ form.pose_type }}
+                        <select name="pose_type" id="pose_type" class="form-control" required>
+                            <option value="en_garde">En Garde</option>
+                            <option value="lunge">Lunge</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="image" class="form-label">Upload Image</label>
-                        {{ form.image }}
+                        <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Analyze Pose</button>
                 </form>
@@ -39,9 +42,11 @@
             <div class="col-md-6">
                 <div id="results" style="display: none;">
                     <div class="image-container">
+                        <h4>Original Image</h4>
                         <img id="originalImage" class="img-fluid" alt="Original Image">
                     </div>
                     <div class="image-container">
+                        <h4>Analyzed Image</h4>
                         <img id="annotatedImage" class="img-fluid" alt="Analyzed Image">
                     </div>
                     <div class="feedback-box">
@@ -90,8 +95,8 @@
                             alert('Error: ' + response.error);
                         }
                     },
-                    error: function() {
-                        alert('An error occurred while processing your request.');
+                    error: function(xhr, status, error) {
+                        alert('An error occurred while processing your request: ' + error);
                     },
                     complete: function() {
                         $('.loading').hide();

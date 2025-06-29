@@ -1,7 +1,7 @@
 import os
 import json
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .forms import PoseAnalysisForm
@@ -9,9 +9,53 @@ from PIL import Image
 import io
 import base64
 
+def health_check(request):
+    """Simple health check endpoint for debugging"""
+    return JsonResponse({
+        'status': 'healthy',
+        'message': 'Django app is running on Vercel'
+    })
+
 def home(request):
-    form = PoseAnalysisForm()
-    return render(request, 'fencing_app/home.html', {'form': form})
+    """Simple home view that returns HTML directly"""
+    html_content = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Fencing Pose Analysis</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .container { max-width: 600px; margin: 0 auto; }
+            .form-group { margin-bottom: 20px; }
+            label { display: block; margin-bottom: 5px; }
+            input, select { width: 100%; padding: 8px; margin-bottom: 10px; }
+            button { background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Fencing Pose Analysis</h1>
+            <p>Upload an image to analyze your fencing pose.</p>
+            <form action="/analyze/" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="pose_type">Pose Type:</label>
+                    <select name="pose_type" id="pose_type" required>
+                        <option value="en_garde">En Garde</option>
+                        <option value="lunge">Lunge</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="image">Upload Image:</label>
+                    <input type="file" name="image" id="image" accept="image/*" required>
+                </div>
+                <button type="submit">Analyze Pose</button>
+            </form>
+            <p><a href="/health/">Health Check</a></p>
+        </div>
+    </body>
+    </html>
+    """
+    return HttpResponse(html_content)
 
 @csrf_exempt
 def analyze_pose(request):

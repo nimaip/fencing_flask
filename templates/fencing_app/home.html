@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fencing Pose Estimation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+        <h1 class="title">Fencing Pose Estimation</h1>
+        <p class="subtitle">Analyze your fencing form with AI-powered pose estimation</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <form id="poseForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="pose_type" class="form-label">Select Pose Type</label>
+                        {{ form.pose_type }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Upload Image</label>
+                        {{ form.image }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analyze Pose</button>
+                </form>
+                
+                <div class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Analyzing pose...</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div id="results" style="display: none;">
+                    <div class="image-container">
+                        <img id="originalImage" class="img-fluid" alt="Original Image">
+                    </div>
+                    <div class="image-container">
+                        <img id="annotatedImage" class="img-fluid" alt="Analyzed Image">
+                    </div>
+                    <div class="feedback-box">
+                        <h3>Form Analysis</h3>
+                        <div id="feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#poseForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                $('.loading').show();
+                $('#results').hide();
+                
+                $.ajax({
+                    url: '/analyze/',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#originalImage').attr('src', response.original_image);
+                            $('#annotatedImage').attr('src', response.annotated_image);
+                            
+                            let feedbackHtml = '';
+                            if (response.feedback && response.feedback.length > 0) {
+                                response.feedback.forEach(function(item) {
+                                    feedbackHtml += `<p>• ${item}</p>`;
+                                });
+                            } else {
+                                feedbackHtml = '<p>Excellent form! All criteria met.</p>';
+                            }
+                            $('#feedback').html(feedbackHtml);
+                            
+                            $('#results').show();
+                        } else {
+                            alert('Error: ' + response.error);
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while processing your request.');
+                    },
+                    complete: function() {
+                        $('.loading').hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -27,10 +27,10 @@ This guide explains how to deploy your Flask fencing pose analysis application t
 ### Required Files:
 - `app-vercel.py` - Vercel-compatible Flask application
 - `vercel.json` - Vercel configuration
-- `requirements-vercel.txt` - Vercel-compatible dependencies
+- `requirements-vercel-simple.txt` - Simplified dependencies (no OpenCV/MediaPipe)
 - `templates/index-vercel.html` - Vercel-compatible template
-- `enGarde.py` - Pose analysis logic
-- `lunge.py` - Pose analysis logic
+- `enGarde.py` - Pose analysis logic (for reference)
+- `lunge.py` - Pose analysis logic (for reference)
 
 ### Optional Files:
 - `README.md` - Documentation
@@ -43,21 +43,21 @@ This guide explains how to deploy your Flask fencing pose analysis application t
 1. **Ensure all files are committed**:
    ```bash
    git add .
-   git commit -m "Prepare for Vercel deployment"
+   git commit -m "Prepare for Vercel deployment with simplified requirements"
    git push origin main
    ```
 
 2. **Verify file structure**:
    ```
    fencing/
-   ├── app-vercel.py          # Vercel Flask app
-   ├── vercel.json            # Vercel config
-   ├── requirements-vercel.txt # Vercel dependencies
-   ├── enGarde.py             # Pose analysis
-   ├── lunge.py               # Pose analysis
+   ├── app-vercel.py              # Vercel Flask app
+   ├── vercel.json                # Vercel config
+   ├── requirements-vercel-simple.txt # Simplified dependencies
+   ├── enGarde.py                 # Pose analysis logic
+   ├── lunge.py                   # Pose analysis logic
    ├── templates/
-   │   └── index-vercel.html  # Vercel template
-   └── README.md              # Documentation
+   │   └── index-vercel.html      # Vercel template
+   └── README.md                  # Documentation
    ```
 
 ### Step 2: Deploy to Vercel
@@ -77,7 +77,7 @@ This guide explains how to deploy your Flask fencing pose analysis application t
    - **Root Directory**: `/` (root)
    - **Build Command**: Leave empty
    - **Output Directory**: Leave empty
-   - **Install Command**: `pip install -r requirements-vercel.txt`
+   - **Install Command**: Leave empty (handled by vercel.json)
 
 4. **Environment Variables** (optional):
    - No environment variables needed for basic deployment
@@ -125,26 +125,26 @@ This guide explains how to deploy your Flask fencing pose analysis application t
 ### ✅ What Will Work:
 - **Web Interface**: Clean, responsive UI
 - **Image Upload**: File upload functionality
-- **Mock Analysis**: Realistic feedback when real analysis fails
+- **Mock Analysis**: Realistic feedback (since OpenCV/MediaPipe are not included)
 - **Error Handling**: Graceful fallbacks and user notifications
 
-### ⚠️ What May Not Work:
-- **Real Pose Analysis**: OpenCV/MediaPipe may fail to load
-- **Image Annotations**: May not show pose landmarks
+### ⚠️ What Will Not Work:
+- **Real Pose Analysis**: OpenCV/MediaPipe are not included in requirements
+- **Image Annotations**: Will not show pose landmarks
 - **Performance**: May be slower due to serverless constraints
 
 ### 📝 User Experience:
 - Users see a note about Vercel limitations
 - Mock analysis provides realistic feedback
-- Clear indication when mock analysis is used
-- App remains functional even with limitations
+- Clear indication that mock analysis is being used
+- App remains functional with simulated pose analysis
 
 ## Troubleshooting
 
 ### Common Issues:
 
 1. **Build Failures**:
-   - Check `requirements-vercel.txt` for compatible versions
+   - ✅ **FIXED**: Using `requirements-vercel-simple.txt` without problematic dependencies
    - Ensure all files are committed to Git
 
 2. **Function Timeouts**:
@@ -152,8 +152,8 @@ This guide explains how to deploy your Flask fencing pose analysis application t
    - Mock analysis is used as fallback
 
 3. **Import Errors**:
-   - OpenCV/MediaPipe may not be available
-   - App automatically falls back to mock analysis
+   - OpenCV/MediaPipe are not included, so no import errors
+   - App automatically uses mock analysis
 
 4. **File Upload Issues**:
    - Files are processed in `/tmp` directory
@@ -169,7 +169,7 @@ This guide explains how to deploy your Flask fencing pose analysis application t
    - Visit `/health` to check if app is running
 
 3. **Check Function Logs**:
-   - Look for import errors or timeout messages
+   - Look for any remaining error messages
 
 ## Alternative Deployment Options
 
@@ -206,7 +206,7 @@ python app.py
 ### Vercel Deployment:
 ```bash
 # Automatic deployment from Git
-# May use mock analysis due to limitations
+# Uses mock analysis (no OpenCV/MediaPipe)
 ```
 
 ## Monitoring and Maintenance
@@ -216,15 +216,51 @@ python app.py
    - Check for errors and timeouts
 
 2. **Update Dependencies**:
-   - Keep `requirements-vercel.txt` updated
+   - Keep `requirements-vercel-simple.txt` updated
    - Test locally before deploying
 
 3. **Performance Optimization**:
    - Consider image size limits
    - Optimize analysis algorithms
 
+## Configuration Details
+
+### vercel.json:
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app-vercel.py",
+      "use": "@vercel/python",
+      "config": {
+        "requirements": "requirements-vercel-simple.txt"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app-vercel.py"
+    }
+  ],
+  "env": {
+    "PYTHONPATH": "."
+  }
+}
+```
+
+### requirements-vercel-simple.txt:
+```
+Flask==2.3.3
+Pillow==10.2.0
+Werkzeug==2.3.7
+```
+
 ## Conclusion
 
-The Vercel deployment provides a functional demo of your fencing pose analysis application, but with limitations due to serverless constraints. For production use with full OpenCV/MediaPipe functionality, consider deploying to Heroku, DigitalOcean, or Google Cloud Run.
+The Vercel deployment provides a functional demo of your fencing pose analysis application using mock analysis. This approach ensures the deployment works reliably without the complications of OpenCV/MediaPipe dependencies in the serverless environment.
+
+For production use with full OpenCV/MediaPipe functionality, consider deploying to Heroku, DigitalOcean, or Google Cloud Run.
 
 The mock analysis ensures users can still experience the application's interface and understand the type of feedback that would be provided with real pose analysis. 
